@@ -23,7 +23,6 @@ class Database:
                 maximum_load INTEGER NOT NULL
             )""")
         self.conn.commit()
-
     def add_vehicle(self, vehicle_id: int, engine_capacity: int, fuel_consumption: int, maximum_load: int) -> None:
         """
         Add a vehicle to the database
