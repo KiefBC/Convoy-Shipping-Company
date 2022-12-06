@@ -1,5 +1,6 @@
 import csv
 import re
+import database
 import pandas as pd
 
 
@@ -54,7 +55,8 @@ class Convoy:
         self.convoy_filename = filename[:-5] + '.csv'
         # Write it out to a csv file
         the_dataframe.to_csv(f'{self.convoy_filename}', index=False, header=True)
-        print(f"{the_dataframe.shape[0]} {'lines were' if the_dataframe.shape[0] > 1 else 'line was'} added to {self.convoy_filename}")
+        print(
+            f"{the_dataframe.shape[0]} {'lines were' if the_dataframe.shape[0] > 1 else 'line was'} added to {self.convoy_filename}")
 
 
 def main() -> None:
@@ -62,22 +64,40 @@ def main() -> None:
     Main function
     :return: None
     """
-    try:
-        filename = input('Input file name\n')
-        if not re.match(".*\.(csv|xlsx)", filename):
-            print('Make sure you only use .xlsx or .csv extension files\n')
-    except FileNotFoundError as e:
-        print(f'\nERROR! {e}\n')
-    else:
-        convoy = Convoy(filename)
-        if re.match(".*\.(xlsx)$", filename):
-            # If the file is an Excel file, convert it to csv
-            convoy.convert_xlsx(filename)
-            # Then clean the csv file
-            convoy.clean_csv()
+    while True:
+        try:
+            filename = input('Input file name\n')
+            if not re.match(".*\.(csv|xlsx)", filename):
+                print('Make sure you only use .xlsx or .csv extension files\n')
+        except FileNotFoundError as e:
+            print(f'\nERROR! {e}\n')
         else:
-            # If the file is a csv file, clean it
-            convoy.clean_csv()
+            # Removing the extension from the filename
+            no_ext_file = filename[:-5] if filename.endswith('.xlsx') else filename[:-4]
+            cv_db = database.Database(no_ext_file)
+            # Establishing connection to the Class
+            convoy = Convoy(filename)
+            # cv_db.initialize_database()
+            if re.match(".*\.(xlsx)$", filename):
+                # If the file is an Excel file, convert it to csv
+                convoy.convert_xlsx(filename)
+                # Then clean the csv file
+                convoy.clean_csv()
+            else:
+                # If the file is a csv file, clean it
+                convoy.clean_csv()
+            cleaned_csv = f'{convoy.convoy_filename[:-4]}[CHECKED].csv'
+            count = 0
+            # Insert the data into the database
+            with open(cleaned_csv, 'r') as csv_file:
+                file_reader = csv.reader(csv_file, delimiter=',', lineterminator='\n')
+                # Skip the header
+                next(file_reader)
+                for row in file_reader:
+                    # Insert the data into the database
+                    cv_db.add_vehicle(int(row[0]), int(row[1]), int(row[2]), int(row[3]))
+                    count += 1
+            print(f'{count} {"records were" if count > 1 else "record was"} inserted into {no_ext_file}.s3db')
 
 
 if __name__ == '__main__':
