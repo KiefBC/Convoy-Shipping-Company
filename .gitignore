@@ -10,7 +10,8 @@
 .idea/**/shelf
 .idea
 *.xlsx
-
+*.s3db
+*.csv
 
 # AWS User-specific
 .idea/**/aws.xml
