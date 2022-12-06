@@ -44,6 +44,11 @@ class Convoy:
             print(f'{cells} {"cells were" if cells > 1 else "cell was"} corrected in {checked_csv}')
 
     def convert_xlsx(self, filename: str) -> None:
+        """
+        Convert xlsx file to csv
+        :param filename:
+        :return:
+        """
         # Read in the file
         the_dataframe = pd.read_excel(filename, sheet_name='Vehicles', engine='openpyxl', dtype=str)
         self.convoy_filename = filename[:-5] + '.csv'
