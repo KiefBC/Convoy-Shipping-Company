@@ -56,5 +56,4 @@ class Convoy:
         the_dataframe.to_csv(f'{self.convoy_filename}', index=False, header=True)
         print(
             f"{the_dataframe.shape[0]} {'lines were' if the_dataframe.shape[0] > 1 else 'line was'} added to {self.convoy_filename}")
-        # print('THIS IS OUR CONVOY_FILENAME AFTER CONVERSION: ', self.convoy_filename)
         self.clean_csv(self.convoy_filename)
