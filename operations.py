@@ -11,6 +11,11 @@ class Convoy:
         pass
 
     def clean_csv(self, filename):
+        """
+        This function cleans a CSV file
+        :param filename:
+        :return:
+        """
         # Preparing our Counter and Cell Counter
         counter = 0
         num_cells = 0
@@ -63,6 +68,11 @@ class Convoy:
             print(f'{num_cells} {"cells were" if num_cells > 1 else "cell was"} corrected in {checked_csv}')
 
     def convert_xlsx_to_csv(self, filename):
+        """
+        This function converts an Excel file to a CSV file
+        :param filename:
+        :return:
+        """
         # New CSV filename
         # new_csv = filename[:-5] + '.csv'
         new_csv = f'{filename}.csv'
@@ -80,6 +90,11 @@ class Convoy:
         print(f'{rows} line{"s were" if rows != 1 else " was"} added to {new_csv}')
 
     def convert_sqlite_to_json(self, filename):
+        """
+        This function converts a SQLite database to a JSON file
+        :param filename:
+        :return:
+        """
         # New JSON filename
         new_json = f'{filename}.json'
 

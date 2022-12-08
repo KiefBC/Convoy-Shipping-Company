@@ -27,10 +27,6 @@ class Database:
         """
         Add a vehicle to the database
         :param filename:
-        :param vehicle_id:
-        :param engine_capacity:
-        :param fuel_consumption:
-        :param maximum_load:
         :return:
         """
         counter = 0
