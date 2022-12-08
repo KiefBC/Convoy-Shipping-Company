@@ -4,7 +4,7 @@ import sqlite3
 
 class Database:
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str) -> None:
         self.db = f'{filename}.s3db'
         self.conn = sqlite3.connect(f'{filename}.s3db')
         self.cursor = self.conn.cursor()
@@ -29,11 +29,13 @@ class Database:
         :param filename:
         :return:
         """
+        if '[CHECKED]' in filename:
+            csv_filename = filename
+            db_filename = f'{filename[:-13]}.s3db'
+        else:
+            csv_filename = f'{filename}[CHECKED].csv'
+            db_filename = f'{filename}.s3db'
         counter = 0
-        # Create CSV Filename
-        csv_filename = f'{filename}[CHECKED].csv'
-        # Create Database Filename
-        db_filename = f'{filename}.s3db'
         # Select the CSV file
         with open(csv_filename, 'r') as csv_file:
             # Read the CSV file
@@ -52,12 +54,11 @@ class Database:
                         {row[3]}
                     )""")
                     self.conn.commit()
-                    # Announce how many rows have been added
+            # Announce how many rows have been added
             print(f'{counter} {"records were" if counter > 1 else "record was"} inserted into {db_filename}')
-            self.conn.close()
 
 
-def main():
+def main() -> None:
     pass
 
 
