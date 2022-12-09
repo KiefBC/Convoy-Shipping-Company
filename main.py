@@ -34,19 +34,18 @@ def main() -> None:
                 oper.clean_csv(non_extension)
                 db.add_csv_to_db(non_extension)
                 oper.convert_sqlite_to_json(non_extension)
+                oper.convert_to_xml(non_extension)
         # Check if the file is an Excel file
         if re.match(".*\.(xlsx)$", filename):
             oper.convert_xlsx_to_csv(non_extension)
             oper.clean_csv(non_extension)
             db.add_csv_to_db(non_extension)
             oper.convert_sqlite_to_json(non_extension)
+            oper.convert_to_xml(non_extension)
         # Check if the file is a SQLite3 database
         if re.match(".*\.(s3db)$", filename):
             oper.convert_sqlite_to_json(non_extension)
-        # Check if the file is a JSON file
-        if re.match(".*\.(json)$", filename):
-            # Call the Convert JSON function
-            pass
+            oper.convert_to_xml(non_extension)
 
 
 if __name__ == '__main__':

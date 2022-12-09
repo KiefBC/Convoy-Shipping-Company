@@ -2,7 +2,11 @@ import json
 import re
 import sqlite3
 import csv
+from dicttoxml import dicttoxml
+from pprint import pprint
+
 import pandas as pd
+from lxml import etree
 
 
 class Convoy:
@@ -95,3 +99,30 @@ class Convoy:
         # Count the number of rows added
         rows = df.shape[0]
         print(f'{rows} vehicle{"s were" if rows != 1 else " was"} saved into {new_json}')
+
+    def convert_to_xml(self, filename):
+        """
+        This function converts a JSON file to an XML file
+        :param filename:
+        :return:
+        """
+        # XML Filename
+        new_xml = f'{filename}.xml'
+        # XML String
+        string = '<convoy>'
+        # Read the file and convert it to a dataframe using pandas
+        df = pd.read_sql_query('SELECT * FROM convoy', self.conn)
+        for x in range(len(df)):
+            string += f'\n\t<vehicle>\n\t\t<vehicle_id>{df.vehicle_id[x]}</vehicle_id>' \
+                  f'\n\t\t<engine_capacity>{df.engine_capacity[x]}</engine_capacity>' \
+                  f'\n\t\t<fuel_consumption>{df.fuel_consumption[x]}</fuel_consumption>' \
+                  f'\n\t\t<maximum_load>{df.maximum_load[x]}</maximum_load>' \
+                  f'\n\t</vehicle>'
+        string += '\n</convoy>'
+        # Create a XML file
+        root = etree.fromstring(string)
+        root.getroottree().write(new_xml, pretty_print=True)
+        # Announce the number of rows added
+        length = len(df)
+        print(f'{length} vehicle{"s were" if length != 1 else " was"} saved into {new_xml}')
+
