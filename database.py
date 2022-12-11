@@ -1,10 +1,12 @@
 import csv
 import sqlite3
+from operations import Convoy
 
 
 class Database:
 
     def __init__(self, filename: str) -> None:
+        self.non_extension = filename
         self.db = f'{filename}.s3db'
         self.conn = sqlite3.connect(f'{filename}.s3db')
         self.cursor = self.conn.cursor()
@@ -19,7 +21,8 @@ class Database:
                 vehicle_id INTEGER PRIMARY KEY,
                 engine_capacity INTEGER NOT NULL,
                 fuel_consumption INTEGER NOT NULL,
-                maximum_load INTEGER NOT NULL
+                maximum_load INTEGER NOT NULL,
+                score INTEGER NOT NULL
             )""")
         self.conn.commit()
 
@@ -29,6 +32,7 @@ class Database:
         :param filename:
         :return:
         """
+        c = Convoy(self.non_extension)
         if '[CHECKED]' in filename:
             csv_filename = filename
             db_filename = f'{filename[:-13]}.s3db'
@@ -36,22 +40,23 @@ class Database:
             csv_filename = f'{filename}[CHECKED].csv'
             db_filename = f'{filename}.s3db'
         counter = 0
-        # Select the CSV file
         with open(csv_filename, 'r') as csv_file:
             # Read the CSV file
             file_reader = csv.reader(csv_file, delimiter=',', lineterminator='\n')
-            # Loop through the rows
+            # We skip the first row because we do not want Headers (ie - ID, Vehicle_ID)
             next(file_reader)
             for row in file_reader:
                 counter += 1
+                the_score = c.the_score(int(row[1]), int(row[2]), int(row[3]))
                 # If the row is not the header
                 if row[0] != 'vehicle_id':
-                    # Insert the row into the database
+                    # Insert our Score into the DB along with the other values
                     self.cursor.execute(f"""INSERT or REPLACE INTO convoy VALUES (
                         {row[0]},
                         {row[1]},
                         {row[2]},
-                        {row[3]}
+                        {row[3]},
+                        {the_score}
                     )""")
                     self.conn.commit()
             # Announce how many rows have been added

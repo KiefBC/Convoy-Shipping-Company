@@ -1,6 +1,5 @@
 import database
 import operations
-import csv
 import re
 
 
@@ -10,7 +9,6 @@ def main() -> None:
     :return: None
     """
     try:
-        # Ask the user for the filename
         filename = input('Input file name\n')
         if not re.match(".*\.(csv|xlsx|s3db|json|xml)", filename):
             print('Make sure you only use .xlsx, .csv, .s3db, .json, or .xml extension files\n')
@@ -30,6 +28,7 @@ def main() -> None:
             if re.match(".*\[CHECKED\].csv$", filename):
                 db.add_csv_to_db(filename)
                 oper.convert_sqlite_to_json(non_extension)
+                oper.convert_to_xml(non_extension)
             else:
                 oper.clean_csv(non_extension)
                 db.add_csv_to_db(non_extension)
