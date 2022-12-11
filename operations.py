@@ -2,7 +2,6 @@ import json
 import re
 import sqlite3
 import csv
-
 import pandas as pd
 from lxml import etree
 
