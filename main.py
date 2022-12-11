@@ -9,7 +9,6 @@ def main() -> None:
     :return: None
     """
     try:
-        # Ask the user for the filename
         filename = input('Input file name\n')
         if not re.match(".*\.(csv|xlsx|s3db|json|xml)", filename):
             print('Make sure you only use .xlsx, .csv, .s3db, .json, or .xml extension files\n')
