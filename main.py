@@ -1,6 +1,5 @@
 import database
 import operations
-import csv
 import re
 
 
@@ -30,6 +29,7 @@ def main() -> None:
             if re.match(".*\[CHECKED\].csv$", filename):
                 db.add_csv_to_db(filename)
                 oper.convert_sqlite_to_json(non_extension)
+                oper.convert_to_xml(non_extension)
             else:
                 oper.clean_csv(non_extension)
                 db.add_csv_to_db(non_extension)
