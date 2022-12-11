@@ -40,18 +40,17 @@ class Database:
             csv_filename = f'{filename}[CHECKED].csv'
             db_filename = f'{filename}.s3db'
         counter = 0
-        # Select the CSV file
         with open(csv_filename, 'r') as csv_file:
             # Read the CSV file
             file_reader = csv.reader(csv_file, delimiter=',', lineterminator='\n')
-            # Loop through the rows
+            # We skip the first row because we do not want Headers (ie - ID, Vehicle_ID)
             next(file_reader)
             for row in file_reader:
                 counter += 1
                 the_score = c.the_score(int(row[1]), int(row[2]), int(row[3]))
                 # If the row is not the header
                 if row[0] != 'vehicle_id':
-                    # Insert the row into the database
+                    # Insert our Score into the DB along with the other values
                     self.cursor.execute(f"""INSERT or REPLACE INTO convoy VALUES (
                         {row[0]},
                         {row[1]},

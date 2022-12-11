@@ -9,7 +9,7 @@ from lxml import etree
 
 class Convoy:
 
-    def __init__(self, filename) -> None:
+    def __init__(self, filename: str) -> None:
         self.db = f'{filename}.s3db'
         self.conn = sqlite3.connect(f'{filename}.s3db')
         self.cursor = self.conn.cursor()
@@ -28,7 +28,6 @@ class Convoy:
         checked_csv = f'{filename}[CHECKED].csv'
         # Add CSV extension to the filename
         filename = f'{filename}.csv'
-        # Open the CSV file
         with open(filename, 'r') as csv_file:
             with open(checked_csv, 'w') as cleaned_file:
                 # Read the Original CSV File and Write in the new CSV File
@@ -46,13 +45,11 @@ class Convoy:
                             # If the cell contains digits only
                             if cell.isdigit():
                                 new_list.append(cell)
-                            # If the cell contains non-digits
                             else:
                                 # Using regex to remove all non-alphanumeric characters
                                 cleaned_cell = re.sub(r'\D', '', cell)
                                 num_cells += 1
                                 new_list.append(cleaned_cell)
-                        # Write the new row
                         file_writer.writerow(new_list)
             # Announce the number of cells that were corrected
             print(f'{num_cells} {"cells were" if num_cells > 1 else "cell was"} corrected in {checked_csv}')
@@ -96,11 +93,11 @@ class Convoy:
         # Create a JSON file
         with open(new_json, 'w') as json_file:
             json.dump(convoy_dict, json_file, indent=4)
-        # Count the number of rows added
+        # Count the number of rows added, and announce it
         rows = df.shape[0]
         print(f'{rows} vehicle{"s were" if rows != 1 else " was"} saved into {new_json}')
 
-    def convert_to_xml(self, filename):
+    def convert_to_xml(self, filename: str):
         """
         This function converts a JSON file to an XML file
         :param filename:
@@ -129,6 +126,13 @@ class Convoy:
         print(f'{length} vehicle{"s were" if length != 1 else " was"} saved into {new_xml}')
 
     def the_score(self, capacity: int, consumption: int, maximum_load: int) -> int:
+        """
+        This function calculates the score of a vehicle
+        :param capacity:
+        :param consumption:
+        :param maximum_load:
+        :return:
+        """
         score = 0
         pit_stops = 4.5 // (capacity / consumption)
         if pit_stops == 0:
